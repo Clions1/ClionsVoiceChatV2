@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clions Voice Chat - Admin Paneli</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1 class="text-center">Admin Paneli</h1>
+            <div class="user-info">
+                <span>Admin: <strong id="currentUsername"></strong></span>
+                <button id="logoutBtn" class="btn btn-outline-light btn-sm">Çıkış Yap (Buna basmayi unutma !!!!!!!!!!!!!!)</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container mt-4">
+            <ul class="nav nav-tabs mb-4" id="adminTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab">
+                        <i class="fas fa-users"></i> Kullanıcılar
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="servers-tab" data-bs-toggle="tab" data-bs-target="#servers" type="button" role="tab">
+                        <i class="fas fa-server"></i> Serverler
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="adminTabContent">
+                <!-- Kullanıcılar Sekmesi -->
+                <div class="tab-pane fade show active" id="users" role="tabpanel">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title mb-4">Kullanıcı Yönetimi</h2>
+                            
+
+                            <div class="mb-4">
+                                <div class="input-group">
+                                    <input type="text" id="searchUser" class="form-control" placeholder="Kullanıcı ara...">
+                                    <button class="btn btn-primary" type="button" id="searchButton">
+                                        <i class="fas fa-search"></i> Ara
+                                    </button>
+                                </div>
+                            </div>
+
+
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Kullanıcı Adı</th>
+                                            <th>E-posta</th>
+                                            <th>Kayıt Tarihi</th>
+                                            <th>İşlemler</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="userList">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="tab-pane fade" id="servers" role="tabpanel">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h2 class="card-title mb-0">Server Yönetimi</h2>
+                                <button class="btn btn-primary" id="addServerBtn">
+                                    <i class="fas fa-plus"></i> Yeni Server
+                                </button>
+                            </div>
+                            
+
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Server Adı</th>
+                                            <th>Açıklama</th>
+                                            <th>Max Kullanıcı</th>
+                                            <th>Durum</th>
+                                            <th>Oluşturulma</th>
+                                            <th>İşlemler</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="serverList">
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="modal fade" id="editUserModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Kullanıcı Düzenle</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="editUserForm">
+                                <input type="hidden" id="editUserId">
+                                <div class="mb-3">
+                                    <label for="editUsername" class="form-label">Kullanıcı Adı</label>
+                                    <input type="text" class="form-control" id="editUsername" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editEmail" class="form-label">E-posta</label>
+                                    <input type="email" class="form-control" id="editEmail" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editPassword" class="form-label">Yeni Şifre (Boş bırakılabilir)</label>
+                                    <input type="password" class="form-control" id="editPassword">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                            <button type="button" class="btn btn-primary" id="saveUserChanges">Kaydet</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+           
+            <div class="modal fade" id="serverModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="serverModalTitle">Server Ekle</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="serverForm">
+                                <input type="hidden" id="serverId">
+                                <div class="mb-3">
+                                    <label for="serverName" class="form-label">Server Adı</label>
+                                    <input type="text" class="form-control" id="serverName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="serverPassword" class="form-label">Server Şifresi</label>
+                                    <input type="text" class="form-control" id="serverPassword" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="serverDescription" class="form-label">Açıklama</label>
+                                    <textarea class="form-control" id="serverDescription" rows="3"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="maxUsers" class="form-label">Maksimum Kullanıcı Sayısı</label>
+                                    <input type="number" class="form-control" id="maxUsers" min="2" max="50" value="10">
+                                </div>
+                                <div class="mb-3" id="serverStatusGroup">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="isActive" checked>
+                                        <label class="form-check-label" for="isActive">
+                                            Server Aktif
+                                        </label>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                            <button type="button" class="btn btn-primary" id="saveServerChanges">Kaydet</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html> 
